@@ -1,0 +1,4 @@
+---
+postgresql_version: "13"
+postgresql_service_name: "postgresql-{{ postgresql_version }}"
+postgresql_hba_dest: "/var/lib/pgsql/{{ postgresql_version }}/data/pg_hba.conf"

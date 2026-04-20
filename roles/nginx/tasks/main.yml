@@ -1,0 +1,49 @@
+---
+- name: Install nginx package
+  ansible.builtin.dnf:
+    name: nginx
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags: [nginx, install]
+
+- name: Install chrony client
+  ansible.builtin.dnf:
+    name: chrony
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags: [chrony_client, install]
+
+- name: Deploy chrony client config
+  ansible.builtin.copy:
+    src: chrony-client.conf
+    dest: /etc/chrony.conf
+    owner: root
+    group: root
+    mode: "0644"
+    backup: yes
+  notify: Restart chrony client
+  tags: [chrony_client, config]
+
+- name: Ensure chrony client is enabled and running
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+    enabled: true
+  tags: [chrony_client, service]
+
+- name: Deploy index.html from Jinja2 template
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /usr/share/nginx/html/index.html
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload nginx
+  tags: [nginx, config]
+
+- name: Ensure nginx service is enabled and running
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+  tags: [nginx, service]
