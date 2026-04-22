@@ -37,10 +37,7 @@
     - name: Print Nginx Summary
       ansible.builtin.debug:
         msg: |
-          ========================================
               APP DEPLOYMENT SUMMARY
-          ========================================
           Version  : {{ ansible_facts.packages['nginx'][0]['version'] | default('Not found') }}
           Access   : {{ nginx_access_log }}
           Error    : {{ nginx_error_log }}
-          ========================================
